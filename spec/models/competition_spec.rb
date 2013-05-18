@@ -1,6 +1,18 @@
 require 'spec_helper'
 
 describe Competition do
+  context "associations" do
+    it "should delete competitors when deleted" do
+      competition = FactoryGirl.create(:competition)
+      id = competition.id
+      competition.competitors.create(team: FactoryGirl.create(:team))
+
+      competition.destroy
+      competitor = Competitor.find_by_competition_id(id)
+      competitor.should be_nil
+    end
+  end
+
   context "validation" do
     it { should validate_presence_of :title }
     it { should validate_presence_of :description }
@@ -28,20 +40,5 @@ describe Competition do
       competition.start_on = Time.now
       competition.should be_valid
     end
-  end
-
-  it "should find competitions team has not joined" do
-    joined = FactoryGirl.create(:competition)
-    us = FactoryGirl.create(:team)
-    joined.competitors.create(team_id: us.id, approved: true)
-
-    them = FactoryGirl.create(:team)
-    joined.competitors.create(team_id: them.id, approved: true)
-
-    not_joined = FactoryGirl.create(:competition)
-
-    joinable_competitions = Competition.joinable_by_team(us)
-    joinable_competitions.should include not_joined
-    joinable_competitions.should_not include joined
   end
 end
