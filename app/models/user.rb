@@ -19,4 +19,10 @@ class User < ActiveRecord::Base
   def to_param
     "#{id}-#{username.parameterize}"
   end
+  
+  # calculates the amount of rides - round trips count as 2, one way as one
+  def ride_count
+  	return (self.rides.where("is_round_trip").count * 2) + 
+  		self.rides.where("is_round_trip = FALSE").count
+  end
 end
