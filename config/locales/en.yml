@@ -75,14 +75,15 @@ en:
         one: "Create an account."
         two: "Join a team."
         three: "Log commutes!"
-    about:
-      title: "About Ride-MN"
-      text: "Brought to you by Resource Data, Inc. Visit us at: "
-      resdat: "http://www.resdat.com/"
-      opensource: "This project is open source and available at"
-      github:
-        text: "github"
-        link: "https://github.com/Ehryk/Ride-MN"
+        
+  about:
+    title: "About Ride-MN"
+    text: "Brought to you by Resource Data, Inc. Visit us at: "
+    resdat: "http://www.resdat.com/"
+    opensource: "This project is open source and available at"
+    github:
+      text: "github"
+      link: "https://github.com/Ehryk/Ride-MN"
 
   membership:
     delete:
