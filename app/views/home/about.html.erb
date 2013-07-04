@@ -1,9 +1,6 @@
 <h1 class="welcome"><%= t("about.title") %></h1>
 
 <div class="row">
-  <div class="span4 countdown">
-    <%= link_to image_tag('RDI_Logo.jpg'), t("about.resdat") %>
-  </div>
   <div class="span4">
     <ul>
       <li>
@@ -14,5 +11,8 @@
         <%= t("about.opensource") %>
         <%= link_to t("about.github.text"), t("about.github.link") %>.
       </li>
+  </div>
+  <div class="span4 countdown">
+    <%= link_to image_tag('RDI_Logo.jpg'), t("about.resdat") %>
   </div>
 </div>
