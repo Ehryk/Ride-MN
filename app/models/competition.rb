@@ -1,5 +1,4 @@
 class Competition < ActiveRecord::Base
-  default_scope order('start_on DESC')
   attr_accessible :description, :end_on, :owner_id, :start_on, :title, :brackets_attributes
 
   belongs_to :owner, class_name: "User"
@@ -8,6 +7,7 @@ class Competition < ActiveRecord::Base
   has_many :competitors, inverse_of: :competition, :dependent => :destroy
   has_many :teams, through: :competitors, inverse_of: :competition
   has_many :members, through: :teams
+  has_many :rides, through: :members
   
   validates :title, presence: true
   validates :description, presence: true
@@ -17,6 +17,8 @@ class Competition < ActiveRecord::Base
 
   validate :validate_start_on_before_end_on
   validate :validate_start_on_not_in_past
+
+  scope :by_start_date, -> { order 'start_on desc' }
 
   def to_param
     "#{id}-#{title.parameterize}"
@@ -34,6 +36,10 @@ class Competition < ActiveRecord::Base
     @calculations ||= Calculations.new(start_on, end_on)
   end
 
+  def active?
+    (start_on..end_on).cover? Calendar.today
+  end
+
   private
 
   def validate_start_on_before_end_on
@@ -45,7 +51,7 @@ class Competition < ActiveRecord::Base
 
   def validate_start_on_not_in_past
     return if start_on.blank?
-    if start_on_changed? && start_on < Date.today
+    if start_on_changed? && start_on < Calendar.today
       errors.add :start_on, "cannot be in the past"
     end
   end

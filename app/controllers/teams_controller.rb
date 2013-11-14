@@ -2,6 +2,7 @@ class TeamsController < ApplicationController
   load_and_authorize_resource
 
   def index
+    @teams = @teams.by_name
   end
 
   def new
@@ -20,6 +21,7 @@ class TeamsController < ApplicationController
   end
 
   def show
+    @memberships = @team.memberships.by_username
     @membership = Membership.new
   end
 
@@ -47,7 +49,7 @@ class TeamsController < ApplicationController
   private
 
   def join_first_competition(team)
-    competition = Competition.first
+    competition = current_competition
     unless competition.nil?
       competition.competitors.create(team_id: team.id, approved: true)
     end

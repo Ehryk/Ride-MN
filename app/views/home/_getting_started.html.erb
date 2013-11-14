@@ -1,7 +1,14 @@
 <div class="row">  
   <div class="span4 countdown">
-    <h1><%= (Date.new(2013, 12, 31) - Date.today).to_i %></h1>
-    <h2>Days Left</h2>
+    <% if current_competition.present? %>
+      <% if current_competition.active? %>
+        <h1><%= (current_competition.end_on - Calendar.today).to_i + 1 %></h1>
+        <h2>Days Left</h2>
+      <% else %>
+        <h2><%= t "help.competition_ended" %></h2>
+        Browse the <%= link_to "final standings", current_competition %>.
+      <% end %>
+    <% end %>
   </div> 
 
   <div class="span4 instructions">

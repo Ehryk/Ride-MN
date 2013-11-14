@@ -36,10 +36,11 @@ describe Ride do
     end
 
     it "cannot be logged for a future date" do
-      ride = FactoryGirl.build :ride, date: Date.tomorrow
+      pending
+      ride = FactoryGirl.build :ride, date: Calendar.tomorrow
       ride.should_not be_valid
       ride.should have(1).error_on(:date)
-      ride.date = Date.today
+      ride.date = Calendar.today
       ride.should be_valid
     end
   end
@@ -53,6 +54,16 @@ describe Ride do
     it "returns zero when no distance values" do
       ride = FactoryGirl.build(:ride, bike_distance: nil, bus_distance: nil, walk_distance: nil)
       ride.total_distance.should == 0
+    end
+  end
+
+  describe "work_trips" do
+    it "only returns work trips" do
+      work = FactoryGirl.create(:ride, work_trip: true)
+      personal = FactoryGirl.create(:ride, work_trip: false)
+      trips = Ride.work_trips
+      trips.should include work
+      trips.should_not include personal
     end
   end
 end

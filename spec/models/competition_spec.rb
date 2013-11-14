@@ -51,7 +51,7 @@ describe Competition do
     end
 
     it "should count the weekdays in the competition so far" do
-      Date.stub(today: Date.new(2013, 02, 05))
+      Calendar.stub(today: Date.new(2013, 02, 05))
       competition = FactoryGirl.build(:competition,
         start_on: Date.new(2013, 02, 04),
         end_on: Date.new(2013, 02, 10))
@@ -66,6 +66,32 @@ describe Competition do
         start_on: Date.new(2013, 02, 07),
         end_on: Date.new(2013, 02, 10))
       competition.work_days.should equal(0)
+    end
+  end
+
+  context "status" do
+    it "is active if current date is between start and end date" do
+      Calendar.stub today: Time.zone.parse("2013-08-19").to_date
+      competition = FactoryGirl.build(:competition,
+        start_on: Date.new(2013, 7, 01),
+        end_on: Date.new(2013, 8, 31))
+      competition.should be_active
+    end
+
+    it "is not active if current date is before start date" do
+      Calendar.stub today: Time.zone.parse("2013-07-19").to_date
+      competition = FactoryGirl.build(:competition,
+        start_on: Date.new(2013, 8, 01),
+        end_on: Date.new(2013, 8, 31))
+      competition.should_not be_active
+    end
+
+    it "is not active if current date is after end date" do
+      Calendar.stub today: Time.zone.parse("2013-09-19").to_date
+      competition = FactoryGirl.build(:competition,
+        start_on: Date.new(2013, 8, 01),
+        end_on: Date.new(2013, 8, 31))
+      competition.should_not be_active
     end
   end
 end

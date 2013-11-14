@@ -61,9 +61,11 @@ en:
       mileage: "Your Mileage"
       commutes: "Your Commutes"
       position: "Your Position"
+      no-team: "Join or create a team to start competing"
 
   help:
     title: "Welcome to Ride-MN!"
+    competition_ended: "Time's Up!"
     start:
       captain:
         title: "Team Captains"
