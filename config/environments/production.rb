@@ -63,7 +63,7 @@ BikeCommuteChallenge::Application.configure do
   ActionMailer::Base.delivery_method = :smtp
 
   config.action_mailer.default_url_options = {
-    host: 'commuterchallenge.bicycleanchorage.org'
+    host: 'ride-mn.com'
   }
 
   # Enable threaded mode
