@@ -25,9 +25,9 @@ class CompetitionsController < ApplicationController
     team_participations = calculator.team_participations
     member_participations = calculator.member_participations
 
-    @competition.brackets.to_a.concat(Bracket.new(id: 0, name: 'All Brackets', lower_limit: -1, upper_limit: 1000000))
+    @bracketArray = @competition.brackets.to_a.push(Bracket.new(id: 0, name: 'All Brackets', lower_limit: -1, upper_limit: 1000000, competition_id: @competition.id))
 
-    @brackets = Hash[@competition.brackets.by_lower_limit.map { |bracket|
+    @brackets = Hash[@bracketArray.by_lower_limit.map { |bracket|
       range = bracket.lower_limit..bracket.upper_limit
       tps = team_participations.select { |tp| range.include?(tp.team.business_size) }
       mps = member_participations.select { |mp| range.include?(mp.team.business_size) }
