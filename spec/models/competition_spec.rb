@@ -30,42 +30,58 @@ describe Competition do
       competition.end_on = 1.month.from_now
       competition.should be_valid
     end
+  end
 
-    it "should require start date be in the future" do
-      competition = FactoryGirl.build :competition,
-        start_on: 1.month.ago
-      competition.should_not be_valid
-      competition.should have(1).error_on(:start_on)
+  context "status" do
+    it "is active if current date is between start and end date" do
+      Calendar.stub today: Time.zone.parse("2013-08-19").to_date
+      competition = FactoryGirl.build(:competition,
+        start_on: Date.new(2013, 7, 01),
+        end_on: Date.new(2013, 8, 31))
+      competition.should be_active
+    end
 
-      competition.start_on = Time.now
-      competition.should be_valid
+    it "is not active if current date is before start date" do
+      Calendar.stub today: Time.zone.parse("2013-07-19").to_date
+      competition = FactoryGirl.build(:competition,
+        start_on: Date.new(2013, 8, 01),
+        end_on: Date.new(2013, 8, 31))
+      competition.should_not be_active
+    end
+
+    it "is not active if current date is after end date" do
+      Calendar.stub today: Time.zone.parse("2013-09-19").to_date
+      competition = FactoryGirl.build(:competition,
+        start_on: Date.new(2013, 8, 01),
+        end_on: Date.new(2013, 8, 31))
+      competition.should_not be_active
     end
   end
 
-  context "calculations" do
-    it "should count the total number of weekdays in the competition" do
-      competition = FactoryGirl.build(:competition,
-        start_on: Date.new(2013, 02, 01),
-        end_on: Date.new(2013, 02, 15))
-      competition.total_work_days.should equal(11)
+  describe "active scope" do
+    it "includes competitions whose end date has not passed" do
+      competition = FactoryGirl.create(:competition, start_on: 1.month.ago, end_on: 1.month.from_now)
+      expect(Competition.active).to include(competition)
     end
 
-    it "should count the weekdays in the competition so far" do
-      Date.stub(today: Date.new(2013, 02, 05))
-      competition = FactoryGirl.build(:competition,
-        start_on: Date.new(2013, 02, 04),
-        end_on: Date.new(2013, 02, 10))
-      competition.work_days.should equal(2)
+    it "includes competitions that start today" do
+      competition = FactoryGirl.create(:competition, start_on: Date.today, end_on: 4.months.from_now)
+      expect(Competition.active).to include(competition)
+    end
 
-      competition = FactoryGirl.build(:competition,
-        start_on:Date.new(2013, 02, 05),
-        end_on: Date.new(2013, 02, 05))
-      competition.work_days.should eq(1)
+    it "includes competitions that end today" do
+      competition = FactoryGirl.create(:competition, start_on: 1.month.ago, end_on: Date.today)
+      expect(Competition.active).to include(competition)
+    end
 
-      competition = FactoryGirl.build(:competition,
-        start_on: Date.new(2013, 02, 07),
-        end_on: Date.new(2013, 02, 10))
-      competition.work_days.should equal(0)
+    it "does not include competitions whose end date has passed" do
+      competition = FactoryGirl.create(:competition, start_on: 1.month.ago, end_on: 1.week.ago)
+      expect(Competition.active).to_not include(competition)
+    end
+
+    it "does not include future competitions" do
+      competition = FactoryGirl.create(:competition, start_on: 1.month.from_now, end_on: 4.months.from_now)
+      expect(Competition.active).to_not include(competition)
     end
   end
 end

@@ -7,19 +7,17 @@ class Membership < ActiveRecord::Base
   validates :team, associated: true, presence: true
   validates :user, associated: true, presence: true
 
-  attr_accessible :team_id, :team, :user_id, :user, :approved
+  validates_presence_of :ride_count
+  validates_numericality_of :ride_count, greater_than_or_equal_to: 0
 
   before_save :update_approved_at
 
-  def participation_percent
-    @participation_percent ||= competition.calculations.member_participation_percent(rides)
-  end
+  scope :by_username, -> { includes(:user).order("users.username") }
 
-  def ride_count
-    @competition_rides ||= competition.calculations.member_actual_rides(rides)
-  end
+  scope :approved, -> { where(approved: true) }
 
   private
+
   def update_approved_at
     if approved_changed? && approved?
       self.approved_at = Time.now

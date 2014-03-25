@@ -1,5 +1,4 @@
 class Team < ActiveRecord::Base
-  default_scope order('name ASC')
   belongs_to :captain, class_name: "User"
   has_many :memberships, inverse_of: :team, :dependent => :destroy
   has_many :members, through: :memberships, source: :user
@@ -11,21 +10,9 @@ class Team < ActiveRecord::Base
   validates :captain, presence: true
   validates :business_size, presence: true, :numericality => { :greater_than => 0 }
 
-  attr_accessible :captain_id, :description, :name, :business_size
+  scope :by_name, -> { order :name }
 
   def to_param
     "#{id}-#{name.parameterize}"
-  end
-
-  def approved_users
-    memberships.where(approved: true)
-  end
-
-  def participation_percent
-    @participation_percent ||= competition.calculations.team_participation_percent(business_size, rides)
-  end
-
-  def team_rides
-    @team_rides ||= competition.calculations.team_actual_rides(rides)
   end
 end

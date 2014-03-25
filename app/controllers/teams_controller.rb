@@ -2,6 +2,7 @@ class TeamsController < ApplicationController
   load_and_authorize_resource
 
   def index
+    @teams = current_competition.teams.by_name
   end
 
   def new
@@ -20,14 +21,16 @@ class TeamsController < ApplicationController
   end
 
   def show
+    @memberships = @team.memberships.by_username
     @membership = Membership.new
+    @calculator = ParticipationCalculator.new(@team.competition)
   end
 
   def edit
   end
 
   def update
-    if @team.update_attributes(params[:team])
+    if @team.update_attributes(team_params)
       flash[:success] = t("team.edit.success") 
       redirect_to @team
     else
@@ -47,9 +50,13 @@ class TeamsController < ApplicationController
   private
 
   def join_first_competition(team)
-    competition = Competition.first
+    competition = current_competition
     unless competition.nil?
       competition.competitors.create(team_id: team.id, approved: true)
     end
+  end
+
+  def team_params
+    params.require(:team).permit(:captain_id, :description, :name, :business_size)
   end
 end
