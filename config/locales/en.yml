@@ -43,6 +43,8 @@ en:
     leaderboard:
       teams: "Teams"
       riders: "Top Commuters"
+    status:
+      unstarted: "This competition hasn't started yet!"
 
   competitor:
     delete:
@@ -60,12 +62,15 @@ en:
     user:
       mileage: "Your Mileage"
       commutes: "Your Commutes"
-      position: "Your Position"
+      participation: "Your Participation"
       no-team: "Join or create a team to start competing"
 
   help:
-    title: "Welcome to Ride-MN!"
-    competition_ended: "Time's Up!"
+    title: "Welcome to the BCA's Commuter Challenge!"
+    competition:
+      countdown: "Days Left"
+      countup: "Days Until Start"
+      ended: "Time's Up!"
     start:
       captain:
         title: "Team Captains"
@@ -154,3 +159,6 @@ en:
         bike_distance: "Bike Miles"
         bus_distance: "Bus Miles"
         walk_distance: "Walk Miles"
+
+  sponsor:
+    message_html: "Design and development by <a href='http://www.resdat.com'>Resource Data, Inc.</a>"

@@ -11,12 +11,13 @@ class Ride < ActiveRecord::Base
   validate :validate_distance_presence
   validate :validate_total_distance
 
-  attr_accessible :date, :description, :bike_distance, :bus_distance,
-                  :walk_distance, :rider_id, :is_round_trip, :work_trip
-
   scope :latest, -> { order('date DESC, created_at DESC') }
 
   scope :work_trips, -> { where(work_trip: true) }
+
+  def self.total_distance
+    sum("coalesce(bike_distance, 0) + coalesce(bus_distance, 0) + coalesce(walk_distance, 0)")
+  end
 
   def total_distance
     [bike_distance, bus_distance, walk_distance].compact.sum

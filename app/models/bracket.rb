@@ -9,22 +9,12 @@ class Bracket < ActiveRecord::Base
   validate :validate_upper_limit_cannot_be_between_existing_boundary
   validate :validate_lower_limit_cannot_be_between_existing_boundary
 
-  attr_accessible :competition_id, :lower_limit, :name, :upper_limit
-
   def teams
     competition.teams.where("business_size between ? AND ?", lower_limit, upper_limit)
   end
 
   def memberships
     teams.flat_map(&:memberships)
-  end
-
-  def teams_by_participation
-    teams.sort_by(&:participation_percent).reverse.first(3)
-  end
-
-  def memberships_by_participation
-    memberships.sort_by(&:participation_percent).reverse.first(3)
   end
 
   scope :by_lower_limit, -> { order :lower_limit }
