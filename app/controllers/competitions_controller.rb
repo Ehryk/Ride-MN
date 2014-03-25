@@ -25,7 +25,6 @@ class CompetitionsController < ApplicationController
     team_participations = calculator.team_participations
     member_participations = calculator.member_participations
 
-    @brackets = Hash[@competition.brackets.by_lower_limit.map { |bracket|
     brackets_to_score = @competition.brackets.by_lower_limit.to_a
     brackets_to_score.insert(0, Bracket.new(id: 0, name: 'All Brackets', lower_limit: 0, upper_limit: 100000000))
 
